@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Shop;
+use App\Notifications\DeleteShopNotification;
 
 class ShopController extends Controller
 {
@@ -38,6 +39,8 @@ class ShopController extends Controller
         $shop->country = $request->country;
         $shop->email = $request->email;
         $shop->user_id = auth()->user()->id;
+
+        auth()->user()->notify(new StoreShopNotification($shop)); //inventory utk keluarkan nama edit jgk kat notification
        
         $shop->save();
 
@@ -76,6 +79,7 @@ class ShopController extends Controller
     { 
         
         $shop->delete();
+        auth()->user()->notify(new DeleteShopNotification($shop));
 
     return redirect()->route('shops.index');
    }

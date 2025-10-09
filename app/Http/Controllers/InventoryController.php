@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Inventory;
+use App\Notifications\StoreInventoryNotification;
 
 class InventoryController extends Controller
 {
@@ -40,6 +41,8 @@ class InventoryController extends Controller
         $inventory->quantity = $request->quantity;
         $inventory->user_id = auth()->user()->id;
         $inventory->save();
+
+        auth()->user()->notify(new StoreInventoryNotification($inventory)); //inventory utk keluarkan nama edit jgk kat notification
 
     return redirect()->route('inventories.index');
     }
