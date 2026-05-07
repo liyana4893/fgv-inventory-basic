@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Inventory extends Model
 {
     use HasFactory, SoftDeletes; //gune soft delete untuk table inventory column deleted at
+    
+    protected $fillable = [
+        'name',
+    ];
 
     public function user()
     {
