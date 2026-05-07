@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\InventoryRequest;
 use App\Models\Inventory;
 use App\Notifications\StoreInventoryNotification;
 
@@ -13,7 +13,7 @@ class InventoryController extends Controller
         $this->middleware('auth');
     }
     public function index()
-    { 
+    {
         $inventories = Inventory::all();
 
         //$user = auth()->user();
@@ -26,53 +26,45 @@ class InventoryController extends Controller
 
     //
     public function create()
-    { 
+    {
         $this->authorize('create', Inventory::class); //ni kat policy
 
         return view('inventories.create');
     }
 
-    public function store(Request $request)
-    { 
+    public function store(InventoryRequest $request)
+    {
         //POPO - Plain Old PHP
-        $inventory = new Inventory();
-        $inventory->name = $request->name;
-        $inventory->description = $request->description;
-        $inventory->quantity = $request->quantity;
-        $inventory->user_id = auth()->user()->id;
-        $inventory->save();
-
-        auth()->user()->notify(new StoreInventoryNotification($inventory)); //inventory utk keluarkan nama edit jgk kat notification
-
-    return redirect()->route('inventories.index');
+        $data = $request->validated();
+        $data['user_id'] = auth()->user()->id;
+        $inventory = Inventory::create($data);
+        auth()->user()->notify(new StoreInventoryNotification($inventory));
+        return redirect()->route('inventories.index');
     }
 
     public function show(Inventory $inventory)
-    { 
+    {
         $this->authorize('view', $inventory); //ni kat policy
         return view('inventories.show', compact('inventory'));
     }
 
     public function edit(Inventory $inventory)
-    { 
+    {
         $this->authorize('update', $inventory); //pakai update punya policies
         return view('inventories.edit', compact('inventory'));
     }
 
 
-        public function update(Request $request, Inventory $inventory)
-    { 
+        public function update(InventoryRequest $request, Inventory $inventory)
+    {
         $this->authorize('update', $inventory);
-        $inventory->name = $request->name;
-        $inventory->description = $request->description;
-        $inventory->quantity = $request->quantity;
-        $inventory->save();
-
-    return redirect()->route('inventories.index');
-   } 
+        $data = $request->validated();
+        $inventory->update($data);
+        return redirect()->route('inventories.index');
+    }
 
    public function delete(Inventory $inventory)
-    { 
+    {
         $this->authorize('delete', $inventory);
         $inventory->delete();
 
