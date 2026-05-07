@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Inventory extends Model
 {
-    use SoftDeletes; //gune soft delete untuk table inventory column deleted at
+    use HasFactory, SoftDeletes; //gune soft delete untuk table inventory column deleted at
 
     public function user()
     {
