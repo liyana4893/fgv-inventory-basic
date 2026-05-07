@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ShopRequest;
 use App\Models\Shop;
 use App\Notifications\DeleteShopNotification;
+use App\Notifications\StoreShopNotification;
 
 class ShopController extends Controller
 {
