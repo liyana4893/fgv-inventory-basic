@@ -14,18 +14,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        //tambah function ni untuk seed database sebelum php artisan db:seed
-
+        // Seed a specific user
         $this->call([
-            
             UserSeeder::class,
         ]);
 
-        User::factory(10)->create();
-       
-       
+        // Create 10 users, each with 1 shop and 3 inventories
+        \App\Models\User::factory()
+            ->count(10)
+            ->has(\App\Models\Shop::factory()->count(1))
+            ->has(\App\Models\Inventory::factory()->count(3))
+            ->create();
     }
 
 
